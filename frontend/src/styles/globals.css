@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+/* Força localização portuguesa nos campos de data */
+input[type="datetime-local"].datetime-br,
+input[type="date"].datetime-br,
+input[type="time"].datetime-br {
+  font-family: system-ui, -apple-system, sans-serif;
+  direction: ltr;
+}
+
+/* Configuração específica para navegadores baseados em Webkit */
+input[type="datetime-local"]::-webkit-datetime-edit,
+input[type="datetime-local"]::-webkit-datetime-edit-fields-wrapper,
+input[type="datetime-local"]::-webkit-datetime-edit-text {
+  direction: ltr;
+}
+
+/* Força localização nos calendários */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}

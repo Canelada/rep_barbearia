@@ -1,0 +1,7 @@
+# Ignorar apenas arquivos desnecessários
+testMongo.js
+testLogin.js
+logs/
+*.log
+.env.local
+.env.example

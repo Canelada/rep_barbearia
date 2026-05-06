@@ -1,0 +1,42 @@
+{
+  "name": "barbearia-visconde-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "dev:local": "NODE_ENV=development next dev",
+    "build": "next build",
+    "build:dev": "NODE_ENV=development next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf .next out",
+    "reset": "npm run clean && npm install"
+  },
+  "dependencies": {
+    "@headlessui/react": "^2.2.0",
+    "date-fns": "^4.1.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.1",
+    "lucide-react": "^0.562.0",
+    "next": "^16.1.1",
+    "react": "^19.0.0",
+    "react-big-calendar": "^1.18.0",
+    "react-datepicker": "^8.2.1",
+    "react-dom": "^19.0.0",
+    "recharts": "^2.15.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "^16.1.1",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
