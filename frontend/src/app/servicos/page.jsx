@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
 import { formatarMoeda } from '@/utils/formatters';
 import { API_BASE_URL, getAuthHeaders } from '@/services/api';
@@ -36,13 +36,7 @@ export default function ServicosPage() {
     'Especial',
   ];
 
-  useEffect(() => {
-    fetchServicos();
-    fetchCategorias();
-    fetchEstatisticasCategorias();
-  }, []);
-
-  const fetchServicos = async () => {
+  const fetchServicos = useCallback(async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/servicos`, {
         credentials: 'include',
@@ -65,9 +59,9 @@ export default function ServicosPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const fetchCategorias = async () => {
+  const fetchCategorias = useCallback(async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/categorias`, {
         credentials: 'include',
@@ -84,11 +78,15 @@ export default function ServicosPage() {
         setCategorias(data.data || []);
 
         // Definir categoria padrão se não existir no formData
-        if (data.data?.length > 0 && !data.data.includes(formData.categoria)) {
-          setFormData((prev) => ({ ...prev, categoria: data.data[0] }));
+        if (data.data?.length > 0) {
+          setFormData((prev) =>
+            data.data.includes(prev.categoria)
+              ? prev
+              : { ...prev, categoria: data.data[0] }
+          );
         }
       }
-    } catch (err) {
+    } catch {
       // Fallback para categorias padrão
       setCategorias([
         'Corte Masculino',
@@ -100,9 +98,9 @@ export default function ServicosPage() {
         'Outros',
       ]);
     }
-  };
+  }, []);
 
-  const fetchEstatisticasCategorias = async () => {
+  const fetchEstatisticasCategorias = useCallback(async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/categorias/estatisticas`, {
         credentials: 'include',
@@ -118,10 +116,16 @@ export default function ServicosPage() {
       if (data.success) {
         setEstatisticasCategorias(data.data.servicosPorCategoria || []);
       }
-    } catch (err) {
+    } catch {
       // Erro silencioso nas estatísticas
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchServicos();
+    fetchCategorias();
+    fetchEstatisticasCategorias();
+  }, [fetchServicos, fetchCategorias, fetchEstatisticasCategorias]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

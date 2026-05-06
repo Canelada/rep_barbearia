@@ -18,7 +18,6 @@ export default function RelatoriosPage() {
   const [formato, setFormato] = useState('xlsx');
   const [tipoRelatorio, setTipoRelatorio] = useState('completo');
   const [gerando, setGerando] = useState(false);
-  const [enviando, setEnviando] = useState(false);
   const [sucesso, setSucesso] = useState('');
   const [erro, setErro] = useState('');
 
@@ -637,7 +636,6 @@ export default function RelatoriosPage() {
       return;
     }
 
-    setEnviando(true);
     setErro('');
     setSucesso('');
 
@@ -670,7 +668,6 @@ export default function RelatoriosPage() {
       console.error('Erro ao enviar relatório:', error);
       setErro('Erro de conexão. Tente novamente.');
     } finally {
-      setEnviando(false);
     }
   };
 

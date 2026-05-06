@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { formatarMoeda } from '@/utils/formatters';
 import { API_BASE_URL } from '@/services/api';
 
@@ -13,7 +13,7 @@ const AgendamentosDetalhes = ({ funcionarioId }) => {
     'Content-Type': 'application/json'
   });
 
-  const fetchAgendamentos = async () => {
+  const fetchAgendamentos = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -52,13 +52,13 @@ const AgendamentosDetalhes = ({ funcionarioId }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [funcionarioId, periodo]);
 
   useEffect(() => {
     if (funcionarioId) {
       fetchAgendamentos();
     }
-  }, [funcionarioId, periodo]);
+  }, [funcionarioId, periodo, fetchAgendamentos]);
 
   const formatarData = (dataHora) => {
     const data = new Date(dataHora);

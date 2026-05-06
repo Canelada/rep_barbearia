@@ -1,5 +1,6 @@
 'use client'
-import { useEffect, useState } from 'react'
+import Image from 'next/image';
+import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -17,6 +18,44 @@ export default function Layout({ children }) {
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  const getHorarioHoje = (horarioTrabalho) => {
+    const hoje = new Date();
+    const diasSemana = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];
+    const diaHoje = diasSemana[hoje.getDay()];
+
+    if (!horarioTrabalho || !horarioTrabalho[diaHoje]) {
+      return 'Horário não definido';
+    }
+
+    const horarioHoje = horarioTrabalho[diaHoje];
+    if (!horarioHoje.ativo) {
+      return 'Folga hoje';
+    }
+
+    return `${horarioHoje.inicio} às ${horarioHoje.fim}`;
+  };
+
+  const buscarComissaoFuncionario = useCallback(async (funcionarioId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/comissao/funcionario/${funcionarioId}?meses=12`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+
+        if (result.success && result.data && result.data.resumo) {
+          setComissaoTotal(result.data.resumo.totalComissao);
+        }
+      }
+    } catch {
+      // Erro silencioso - comissão não é crítica
+    }
   }, []);
 
   useEffect(() => {
@@ -47,47 +86,9 @@ export default function Layout({ children }) {
     }
 
     loadSession();
-  }, [router, mounted]);
+  }, [router, mounted, buscarComissaoFuncionario]);
 
-  const getHorarioHoje = (horarioTrabalho) => {
-    const hoje = new Date();
-    const diasSemana = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];
-    const diaHoje = diasSemana[hoje.getDay()];
-
-    if (!horarioTrabalho || !horarioTrabalho[diaHoje]) {
-      return 'Horário não definido';
-    }
-
-    const horarioHoje = horarioTrabalho[diaHoje];
-    if (!horarioHoje.ativo) {
-      return 'Folga hoje';
-    }
-
-    return `${horarioHoje.inicio} às ${horarioHoje.fim}`;
-  };
-
-  const buscarComissaoFuncionario = async (funcionarioId) => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/comissao/funcionario/${funcionarioId}?meses=12`, {
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-
-        if (result.success && result.data && result.data.resumo) {
-          setComissaoTotal(result.data.resumo.totalComissao);
-        }
-      }
-    } catch (error) {
-      // Erro silencioso - comissão não é crítica
-    }
-  };
-
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     if (!mounted || isLoggingOut) return;
 
     setIsLoggingOut(true);
@@ -95,12 +96,12 @@ export default function Layout({ children }) {
       await apiService.logout();
       localStorage.removeItem('user');
       router.push('/login');
-    } catch (error) {
+    } catch {
       // Erro silencioso no logout
     } finally {
       setIsLoggingOut(false);
     }
-  };
+  }, [isLoggingOut, mounted, router]);
 
   // Logout por inatividade (10 minutos)
   useEffect(() => {
@@ -139,7 +140,7 @@ export default function Layout({ children }) {
         document.removeEventListener(event, resetTimer);
       });
     };
-  }, [mounted]);
+  }, [mounted, handleLogout]);
 
   if (!mounted || loading) {
     return (
@@ -159,9 +160,11 @@ export default function Layout({ children }) {
       <aside className="w-64 bg-gradient-to-b from-green-700 to-green-900 text-white shadow-lg fixed left-0 top-0 h-screen overflow-y-auto">
         {/* Logo centralizado no sidebar */}
         <div className="flex justify-center p-6 border-b border-green-600">
-          <img
+          <Image
             src="/logo-monarca.png"
             alt="Logo Barbearia Monarca"
+            width={160}
+            height={160}
             className="h-40 w-40 rounded-lg shadow-lg object-contain"
           />
         </div>

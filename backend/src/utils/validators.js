@@ -65,7 +65,7 @@ export const validateAgendamentoCreate = [
     .withMessage('Nome do cliente deve ter entre 2 e 100 caracteres'),
   body('clienteTelefone')
     .optional()
-    .matches(/^[\d\s\(\)\-\+]+$/)
+    .matches(/^[\d\s()+-]+$/)
     .withMessage('Telefone deve conter apenas números e caracteres especiais válidos'),
   body('clienteEmail')
     .optional()

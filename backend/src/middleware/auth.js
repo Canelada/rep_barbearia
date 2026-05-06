@@ -100,7 +100,7 @@ export const optionalAuth = async (req, res, next) => {
     }
     
     next();
-  } catch (error) {
+  } catch {
     // Em caso de erro, continua sem usuário autenticado
     next();
   }

@@ -85,9 +85,7 @@ export class AuthController {
       if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
         const mongoose = await import('mongoose');
 
-        try {
-          await mongoose.default.disconnect();
-        } catch (e) {}
+        await mongoose.default.disconnect().catch(() => {});
 
         const options = {
           maxPoolSize: 1,

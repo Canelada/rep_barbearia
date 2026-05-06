@@ -1,9 +1,16 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Layout from '@/components/Layout';
 import CalendarHeader from '@/components/CalendarHeader';
 import { formatarMoeda, formatarDataBrasileira } from '@/utils/formatters';
 import { API_BASE_URL, getAuthHeaders } from '@/services/api';
+
+const CATEGORIAS_DISPONIVEIS = [
+  { id: 'servicos', nome: 'Serviços', icone: '✂️', cor: 'green' },
+  { id: 'produtos', nome: 'Produtos', icone: '🧴', cor: 'blue' },
+  { id: 'despesas', nome: 'Despesas', icone: '💸', cor: 'red' },
+  { id: 'outros', nome: 'Outros', icone: '📝', cor: 'gray' },
+];
 
 export default function CaixaPage() {
   const [dataAtual, setDataAtual] = useState(new Date());
@@ -25,56 +32,12 @@ export default function CaixaPage() {
   const [showFecharModal, setShowFecharModal] = useState(false);
   const [operacaoLoading, setOperacaoLoading] = useState(false);
 
-  const categoriasDisponiveis = [
-    { id: 'servicos', nome: 'Serviços', icone: '✂️', cor: 'green' },
-    { id: 'produtos', nome: 'Produtos', icone: '🧴', cor: 'blue' },
-    { id: 'despesas', nome: 'Despesas', icone: '💸', cor: 'red' },
-    { id: 'outros', nome: 'Outros', icone: '📝', cor: 'gray' },
-  ];
-
-  useEffect(() => {
-    // Carregar dados do usuário
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-
-    fetchDadosDia();
-  }, [dataAtual]);
-
-  const fetchDadosDia = async () => {
-    const dataFormatada = dataAtual.toISOString().split('T')[0];
-    await fetchCaixa(dataFormatada);
-  };
-
-  const fetchCaixa = async (data) => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/caixa?data=${data}`, {
-        credentials: 'include',
-        headers: getAuthHeaders(),
-      });
-
-      const result = await res.json();
-      if (res.ok) {
-        setCaixa(result.data);
-        setAgendamentosReais(result.agendamentos || []);
-
-        // Atualizar estatísticas baseado nos dados retornados
-        fetchEstatisticasCategorias(result.data, result.agendamentos || []);
-      } else {
-        setError(result.message || 'Erro ao carregar dados do caixa');
-      }
-    } catch (err) {
-      setError('Erro de conexão');
-    }
-  };
-
-  const fetchEstatisticasCategorias = async (dadosCaixa, agendamentos = []) => {
+  const fetchEstatisticasCategorias = useCallback(async (dadosCaixa, agendamentos = []) => {
     try {
       const stats = {};
 
       // Inicializar categorias
-      categoriasDisponiveis.forEach((cat) => {
+      CATEGORIAS_DISPONIVEIS.forEach((cat) => {
         stats[cat.id] = { entradas: 0, saidas: 0, total: 0 };
       });
 
@@ -110,7 +73,41 @@ export default function CaixaPage() {
     } catch (err) {
       console.error('Erro ao calcular estatísticas:', err);
     }
-  };
+  }, []);
+
+  const fetchCaixa = useCallback(async (data) => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/caixa?data=${data}`, {
+        credentials: 'include',
+        headers: getAuthHeaders(),
+      });
+
+      const result = await res.json();
+      if (res.ok) {
+        setCaixa(result.data);
+        setAgendamentosReais(result.agendamentos || []);
+        fetchEstatisticasCategorias(result.data, result.agendamentos || []);
+      } else {
+        setError(result.message || 'Erro ao carregar dados do caixa');
+      }
+    } catch {
+      setError('Erro de conexão');
+    }
+  }, [fetchEstatisticasCategorias]);
+
+  const fetchDadosDia = useCallback(async () => {
+    const dataFormatada = dataAtual.toISOString().split('T')[0];
+    await fetchCaixa(dataFormatada);
+  }, [dataAtual, fetchCaixa]);
+
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+
+    fetchDadosDia();
+  }, [fetchDadosDia]);
 
   const handleAdd = async () => {
     if (!valor || !descricao) {
@@ -143,7 +140,7 @@ export default function CaixaPage() {
       } else {
         setError(result.message || 'Erro ao adicionar movimentação');
       }
-    } catch (err) {
+    } catch {
       setError('Erro de conexão');
     } finally {
       setLoading(false);
@@ -180,7 +177,7 @@ export default function CaixaPage() {
       } else {
         setError(result.message || 'Erro ao abrir caixa');
       }
-    } catch (err) {
+    } catch {
       setError('Erro de conexão');
     } finally {
       setOperacaoLoading(false);
@@ -210,7 +207,7 @@ export default function CaixaPage() {
       } else {
         setError(result.message || 'Erro ao fechar caixa');
       }
-    } catch (err) {
+    } catch {
       setError('Erro de conexão');
     } finally {
       setOperacaoLoading(false);
@@ -321,7 +318,7 @@ export default function CaixaPage() {
             Movimentação por Categoria
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-            {categoriasDisponiveis.map((cat) => {
+            {CATEGORIAS_DISPONIVEIS.map((cat) => {
               const stats = estatisticasCategorias[cat.id] || {
                 entradas: 0,
                 saidas: 0,
@@ -421,7 +418,7 @@ export default function CaixaPage() {
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-amber-500 focus:border-transparent disabled:bg-gray-100"
                 disabled={loading || !caixa?.status?.podeReceberMovimentacoes}
               >
-                {categoriasDisponiveis.map((cat) => (
+                {CATEGORIAS_DISPONIVEIS.map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.icone} {cat.nome}
                   </option>
@@ -585,11 +582,11 @@ export default function CaixaPage() {
                             {entrada.categoria && (
                               <p className="text-sm text-green-600">
                                 {
-                                  categoriasDisponiveis.find(
+                                  CATEGORIAS_DISPONIVEIS.find(
                                     (c) => c.id === entrada.categoria
                                   )?.icone
                                 }{' '}
-                                {categoriasDisponiveis.find(
+                                {CATEGORIAS_DISPONIVEIS.find(
                                   (c) => c.id === entrada.categoria
                                 )?.nome || entrada.categoria}
                               </p>
@@ -630,11 +627,11 @@ export default function CaixaPage() {
                             {saida.categoria && (
                               <p className="text-sm text-red-600">
                                 {
-                                  categoriasDisponiveis.find(
+                                  CATEGORIAS_DISPONIVEIS.find(
                                     (c) => c.id === saida.categoria
                                   )?.icone
                                 }{' '}
-                                {categoriasDisponiveis.find(
+                                {CATEGORIAS_DISPONIVEIS.find(
                                   (c) => c.id === saida.categoria
                                 )?.nome || saida.categoria}
                               </p>

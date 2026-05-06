@@ -14,8 +14,6 @@ const CalendarHeader = ({
   onToday,
   startDate,
   endDate,
-  onStartDateChange,
-  onEndDateChange,
   children, // Para botões adicionais como "Novo Agendamento"
   className = ''
 }) => {

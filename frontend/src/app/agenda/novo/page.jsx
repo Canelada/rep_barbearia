@@ -38,7 +38,7 @@ export default function NovoAgendamentoPage() {
             u.data?.filter((user) => user.role === 'funcionario') || []
           );
         }
-      } catch (error) {
+      } catch {
         // Erro silencioso
       }
     }

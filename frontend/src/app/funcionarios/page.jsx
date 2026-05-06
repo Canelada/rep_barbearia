@@ -72,7 +72,7 @@ export default function FuncionariosPage() {
       } else {
         setError(data.message || 'Erro ao carregar dados');
       }
-    } catch (err) {
+    } catch {
       setError('Erro de conexão com o servidor');
     } finally {
       setLoading(false);

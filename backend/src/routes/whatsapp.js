@@ -37,8 +37,7 @@ router.post('/webhook',
         From,           // whatsapp:+5511999999999
         Body,           // Texto da mensagem
         MessageSid,     // ID único da mensagem
-        ProfileName,    // Nome do perfil do WhatsApp
-        WaId            // WhatsApp ID (número sem formatação)
+        ProfileName     // Nome do perfil do WhatsApp
       } = req.body;
 
       // Validar que é uma mensagem válida
@@ -218,6 +217,7 @@ Aguardamos você! 💈`;
         sucesso: true,
         id: `sim_${Date.now()}`,
         telefone: agendamento.clienteTelefone,
+        mensagem,
         dataEnvio: new Date(),
         simulado: true
       };

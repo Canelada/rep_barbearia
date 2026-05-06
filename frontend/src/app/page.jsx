@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -15,9 +16,11 @@ export default function HomePage() {
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
       <div className="text-center">
         <div className="flex flex-col items-center justify-center mb-6">
-          <img
+          <Image
             src="/logo-monarca.png"
             alt="Logo Barbearia Monarca"
+            width={96}
+            height={96}
             className="h-24 w-24 rounded-lg shadow-lg object-cover mb-4"
           />
           <h1 className="text-5xl font-bold text-gray-900">

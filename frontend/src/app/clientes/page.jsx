@@ -68,7 +68,7 @@ export default function ClientesPage() {
           setServicos(data.data || []);
         }
       }
-    } catch (err) {
+    } catch {
       // Erro silencioso - serviços não são críticos
     }
   };

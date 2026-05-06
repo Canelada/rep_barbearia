@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import Layout from '@/components/Layout';
 import CalendarHeader from '@/components/CalendarHeader';
@@ -9,8 +9,6 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  LineChart,
-  Line,
   CartesianGrid,
   Legend,
   ResponsiveContainer,
@@ -23,7 +21,6 @@ import {
 import {
   formatarMoeda,
   formatarDataBrasileira,
-  formatarDataHoraBrasileira,
   formatarHoraBrasileira,
   formatarTelefone,
 } from '@/utils/formatters';
@@ -53,13 +50,7 @@ export default function DashboardPage() {
     }
   }, []);
 
-  useEffect(() => {
-    if (mesAtual && anoAtual) {
-      fetchDashboardData();
-    }
-  }, [mesAtual, anoAtual]);
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     if (!mesAtual || !anoAtual) return;
     setLoading(true);
     try {
@@ -71,30 +62,13 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [mesAtual, anoAtual]);
 
-  // Navegação entre meses
-  const navegarMes = (direcao) => {
-    let novoMes = mesAtual;
-    let novoAno = anoAtual;
-
-    if (direcao === 'anterior') {
-      novoMes = mesAtual - 1;
-      if (novoMes < 1) {
-        novoMes = 12;
-        novoAno = anoAtual - 1;
-      }
-    } else if (direcao === 'proximo') {
-      novoMes = mesAtual + 1;
-      if (novoMes > 12) {
-        novoMes = 1;
-        novoAno = anoAtual + 1;
-      }
+  useEffect(() => {
+    if (mesAtual && anoAtual) {
+      fetchDashboardData();
     }
-
-    setMesAtual(novoMes);
-    setAnoAtual(novoAno);
-  };
+  }, [mesAtual, anoAtual, fetchDashboardData]);
 
   const irParaMesAtual = () => {
     setMesAtual(new Date().getMonth() + 1);
@@ -156,15 +130,12 @@ export default function DashboardPage() {
 
   const {
     resumo,
-    proximoAgendamento,
     proximosAgendamentos,
     produtosBaixoEstoque,
     servicosMaisProcurados,
     performanceBarbeiros,
     evolucaoReceita,
-    agendamentosPorStatus,
     movimentacaoRecentes,
-    resumoPorCategoria,
     comparativos,
   } = dashboardData || {};
 
@@ -426,8 +397,8 @@ export default function DashboardPage() {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, percent }) =>
-                    `${name} ${(percent * 100).toFixed(0)}%`
+                  label={({ percent }) =>
+                    `${(percent * 100).toFixed(0)}%`
                   }
                   outerRadius={80}
                   fill="#8884d8"
@@ -460,7 +431,7 @@ export default function DashboardPage() {
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        label={({ name, percent }) =>
+                        label={({ percent }) =>
                           `${(percent * 100).toFixed(0)}%`
                         }
                         outerRadius={100}

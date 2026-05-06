@@ -1,16 +1,16 @@
 import express from 'express';
+/* eslint-disable no-case-declarations */
 import Agendamento from '../models/Agendamento.js';
 import Caixa from '../models/Caixa.js';
 import Cliente from '../models/clienteModel.js';
 import Produto from '../models/Produto.js';
-import pagination from '../middleware/pagination.js';
 
 const router = express.Router();
 
 // GET - Gerar relatório para download
 router.get('/gerar', async (req, res) => {
   try {
-    const { tipo, categoria, startDate, endDate, formato } = req.query;
+    const { tipo, startDate, endDate } = req.query;
 
     // Validações
     if (!startDate || !endDate) {
@@ -860,7 +860,6 @@ router.get('/gerar', async (req, res) => {
 // POST - Enviar relatório por email (placeholder para futura implementação)
 router.post('/enviar', async (req, res) => {
   try {
-    const { para, startDate, endDate, formato, tipo, categoria } = req.body;
     // Por enquanto, retornar que a funcionalidade ainda não está implementada
     return res.status(501).json({
       success: false,

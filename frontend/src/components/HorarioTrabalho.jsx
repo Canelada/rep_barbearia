@@ -29,7 +29,7 @@ const HorarioTrabalho = ({ horarioTrabalho, setFormData, formData, readOnly = fa
   const formatarHorarioResumo = (horario) => {
     if (!horario || typeof horario !== 'object') return 'Não definido';
 
-    const diasAtivos = Object.entries(horario).filter(([_, info]) => info && info.ativo);
+    const diasAtivos = Object.entries(horario).filter(([, info]) => info && info.ativo);
 
     if (diasAtivos.length === 0) return 'Não trabalha';
 

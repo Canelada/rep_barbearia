@@ -10,7 +10,7 @@ const categoriaSchema = new mongoose.Schema({
     validate: {
       validator: function(v) {
         // Permitir apenas letras, números, espaços, hífens e acentos
-        return /^[a-zA-Z0-9\s\-\+áéíóúâêîôûàèìòùãõçÁÉÍÓÚÂÊÎÔÛÀÈÌÒÙÃÕÇ]+$/.test(v);
+        return /^[a-zA-Z0-9\s\-+áéíóúâêîôûàèìòùãõçÁÉÍÓÚÂÊÎÔÛÀÈÌÒÙÃÕÇ]+$/.test(v);
       },
       message: 'Nome da categoria contém caracteres inválidos'
     }

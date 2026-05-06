@@ -58,7 +58,9 @@ export const notFound = (req, res, next) => {
   next(error);
 };
 
-export const errorHandler = (error, req, res, next) => {
+export const errorHandler = (error, req, res, _next) => {
+  void _next;
+
   let statusCode = error.status || error.statusCode || 500;
   let message = error.message || 'Erro interno do servidor';
 

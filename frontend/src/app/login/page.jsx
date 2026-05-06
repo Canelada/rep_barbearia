@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import apiService from '@/services/api';
@@ -122,9 +123,11 @@ export default function LoginPage() {
         <div className="bg-white rounded-lg shadow-xl p-8">
           <div className="text-center mb-8">
             <div className="flex justify-center mb-6">
-              <img
+              <Image
                 src="/logo-monarca.png"
                 alt="Logo Barbearia Monarca"
+                width={128}
+                height={128}
                 className="h-32 w-32 object-contain"
               />
             </div>

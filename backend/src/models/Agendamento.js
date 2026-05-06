@@ -12,7 +12,7 @@ const agendamentoSchema = new mongoose.Schema({
     trim: true,
     validate: {
       validator: function(v) {
-        return !v || /^[\d\s\(\)\-\+]+$/.test(v);
+        return !v || /^[\d\s()+-]+$/.test(v);
       },
       message: 'Telefone deve conter apenas números e caracteres especiais válidos'
     }

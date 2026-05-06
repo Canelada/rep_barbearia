@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import ConversationState, { CONVERSATION_STATES } from '../models/ConversationState.js';
 import Servico from '../models/Servico.js';
 import User from '../models/userModel.js';

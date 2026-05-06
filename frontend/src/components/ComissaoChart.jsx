@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -31,7 +31,7 @@ const ComissaoChart = ({ funcionarioId, altura = 300 }) => {
     'Content-Type': 'application/json'
   });
 
-  const fetchComissaoData = async () => {
+  const fetchComissaoData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -120,7 +120,7 @@ const ComissaoChart = ({ funcionarioId, altura = 300 }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [funcionarioId, usarRangeCustomizado, startDate, endDate, meses]);
 
   // Inicializar datas com hoje quando alternar para range customizado
   useEffect(() => {
@@ -129,13 +129,13 @@ const ComissaoChart = ({ funcionarioId, altura = 300 }) => {
       setStartDate(hoje);
       setEndDate(hoje);
     }
-  }, [usarRangeCustomizado]);
+  }, [usarRangeCustomizado, startDate, endDate]);
 
   useEffect(() => {
     if (funcionarioId) {
       fetchComissaoData();
     }
-  }, [funcionarioId, meses, usarRangeCustomizado, startDate, endDate]);
+  }, [funcionarioId, meses, usarRangeCustomizado, startDate, endDate, fetchComissaoData]);
 
   const handleRegistrarPagamento = async (e) => {
     e.preventDefault();

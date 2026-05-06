@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import Layout from '@/components/Layout'
@@ -87,13 +87,7 @@ export default function LogsPage() {
     return icons[entidade] || '📄'
   }
 
-  useEffect(() => {
-    buscarLogs()
-    buscarEstatisticas()
-    buscarUsuarios()
-  }, [paginacao.page, filtros])
-
-  const buscarLogs = async () => {
+  const buscarLogs = useCallback(async () => {
     setLoading(true)
     setErro('')
 
@@ -136,9 +130,9 @@ export default function LogsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [filtros, paginacao.limit, paginacao.page])
 
-  const buscarEstatisticas = async () => {
+  const buscarEstatisticas = useCallback(async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/audit-logs/estatisticas`, {
         credentials: 'include',
@@ -156,9 +150,9 @@ export default function LogsPage() {
     } catch (error) {
       console.error('Erro ao buscar estatísticas:', error)
     }
-  }
+  }, [])
 
-  const buscarUsuarios = async () => {
+  const buscarUsuarios = useCallback(async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/users`, {
         credentials: 'include',
@@ -176,7 +170,13 @@ export default function LogsPage() {
     } catch (error) {
       console.error('Erro ao buscar usuários:', error)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    buscarLogs()
+    buscarEstatisticas()
+    buscarUsuarios()
+  }, [buscarLogs, buscarEstatisticas, buscarUsuarios])
 
   const handleFiltroChange = (campo, valor) => {
     setFiltros(prev => ({ ...prev, [campo]: valor }))

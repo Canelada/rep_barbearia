@@ -35,7 +35,7 @@ export default function EstoquePage() {
         }
         setLoading(false);
       })
-      .catch((err) => {
+      .catch(() => {
         setError('Erro ao carregar produtos');
         setLoading(false);
       });
@@ -84,7 +84,7 @@ export default function EstoquePage() {
       } else {
         setError(data.message || 'Erro ao salvar produto');
       }
-    } catch (err) {
+    } catch {
       setError('Erro ao salvar produto');
     }
   };
@@ -123,7 +123,7 @@ export default function EstoquePage() {
       } else {
         setError(data.message || 'Erro na movimentação');
       }
-    } catch (err) {
+    } catch {
       setError('Erro na movimentação');
     }
   };
@@ -176,7 +176,7 @@ export default function EstoquePage() {
       } else {
         setError(data.message || 'Erro ao salvar produto');
       }
-    } catch (err) {
+    } catch {
       setError('Erro ao salvar produto');
     }
   };

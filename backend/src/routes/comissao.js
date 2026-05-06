@@ -327,12 +327,6 @@ router.post('/pagamento', async (req, res) => {
 
           pagamento.caixaId = caixa._id;
           await pagamento.save();
-        } else {
-          // Verificar se existe caixa mas está fechado
-          const caixaFechado = await Caixa.findOne({ data: dataCaixa });
-          if (caixaFechado) {
-          } else {
-          }
         }
       } catch (caixaError) {
         console.error('❌ Erro ao registrar no caixa:', caixaError.message);
