@@ -35,7 +35,6 @@ export default function Layout({ children }) {
           buscarComissaoFuncionario(verifiedUser._id || verifiedUser.id);
         }
       } catch {
-        localStorage.removeItem('token');
         localStorage.removeItem('user');
         router.push('/login');
       } finally {
@@ -81,50 +80,7 @@ export default function Layout({ children }) {
 
         if (result.success && result.data && result.data.resumo) {
           setComissaoTotal(result.data.resumo.totalComissao);
-          return;
         }
-      }
-
-      // Fallback para o método antigo se o novo endpoint falhar
-      const agendamentosResponse = await fetch(`${API_BASE_URL}/api/agendamentos`, {
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (agendamentosResponse.ok) {
-        const agendamentos = await agendamentosResponse.json();
-        const agendamentosArray = Array.isArray(agendamentos) ? agendamentos : agendamentos.data || [];
-
-        const agendamentosConcluidos = agendamentosArray.filter(
-          ag => {
-            const agFuncionarioId = typeof ag.funcionarioId === 'object' ? ag.funcionarioId._id : ag.funcionarioId;
-            return agFuncionarioId === funcionarioId && ag.status === 'concluido';
-          }
-        );
-
-        const totalComissao = agendamentosConcluidos.reduce((total, agendamento) => {
-          let comissaoAgendamento = 0;
-
-          // Verificar se tem múltiplos serviços
-          if (agendamento.servicos && agendamento.servicos.length > 0) {
-            comissaoAgendamento = agendamento.servicos.reduce((subTotal, servico) => {
-              const valorServico = servico.preco || 0;
-              const comissaoServico = servico.comissao || 0;
-              return subTotal + (valorServico * (comissaoServico / 100));
-            }, 0);
-          } else {
-            // Formato antigo
-            const valorServico = agendamento.preco || agendamento.valor || 0;
-            const comissaoServico = agendamento.comissao || agendamento.servicoId?.comissao || 0;
-            comissaoAgendamento = valorServico * (comissaoServico / 100);
-          }
-
-          return total + comissaoAgendamento;
-        }, 0);
-
-        setComissaoTotal(totalComissao);
       }
     } catch (error) {
       // Erro silencioso - comissão não é crítica
@@ -137,7 +93,6 @@ export default function Layout({ children }) {
     setIsLoggingOut(true);
     try {
       await apiService.logout();
-      localStorage.removeItem('token');
       localStorage.removeItem('user');
       router.push('/login');
     } catch (error) {
@@ -146,22 +101,6 @@ export default function Layout({ children }) {
       setIsLoggingOut(false);
     }
   };
-
-  // Logout ao fechar a página
-  useEffect(() => {
-    if (!mounted) return;
-
-    const handleBeforeUnload = () => {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, [mounted]);
 
   // Logout por inatividade (10 minutos)
   useEffect(() => {

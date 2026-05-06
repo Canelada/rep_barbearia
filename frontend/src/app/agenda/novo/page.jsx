@@ -19,8 +19,12 @@ export default function NovoAgendamentoPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const resServicos = await fetch(`${API_BASE_URL}/api/servicos`);
-        const resUsuarios = await fetch(`${API_BASE_URL}/api/users`);
+        const resServicos = await fetch(`${API_BASE_URL}/api/servicos`, {
+          credentials: 'include'
+        });
+        const resUsuarios = await fetch(`${API_BASE_URL}/api/users`, {
+          credentials: 'include'
+        });
 
         const s = await resServicos.json();
         const u = await resUsuarios.json();
@@ -46,7 +50,8 @@ export default function NovoAgendamentoPage() {
       if (data && funcionarioId && servicoId) {
         try {
           const res = await fetch(
-            `${API_BASE_URL}/api/agendamentos/horarios?data=${data}&funcionarioId=${funcionarioId}&servicoId=${servicoId}`
+            `${API_BASE_URL}/api/agendamentos/horarios-disponiveis?data=${data}&funcionarioId=${funcionarioId}&servicoId=${servicoId}`,
+            { credentials: 'include' }
           );
           const h = await res.json();
           if (h.success) {
@@ -67,6 +72,7 @@ export default function NovoAgendamentoPage() {
     try {
       const res = await fetch(`${API_BASE_URL}/api/agendamentos`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           clienteNome,

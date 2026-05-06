@@ -10,7 +10,6 @@ export default function CaixaPage() {
   const [caixa, setCaixa] = useState(null);
   const [user, setUser] = useState(null);
   const [agendamentosReais, setAgendamentosReais] = useState([]);
-  const [categorias, setCategorias] = useState([]);
   const [estatisticasCategorias, setEstatisticasCategorias] = useState({});
   const [valor, setValor] = useState('');
   const [descricao, setDescricao] = useState('');
@@ -51,6 +50,7 @@ export default function CaixaPage() {
   const fetchCaixa = async (data) => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/caixa?data=${data}`, {
+        credentials: 'include',
         headers: getAuthHeaders(),
       });
 
@@ -112,16 +112,6 @@ export default function CaixaPage() {
     }
   };
 
-  const navegarData = (direcao) => {
-    const novaData = new Date(dataAtual);
-    novaData.setDate(novaData.getDate() + (direcao === 'anterior' ? -1 : 1));
-    setDataAtual(novaData);
-  };
-
-  const irParaHoje = () => {
-    setDataAtual(new Date());
-  };
-
   const handleAdd = async () => {
     if (!valor || !descricao) {
       setError('Preencha todos os campos obrigatórios');
@@ -134,6 +124,7 @@ export default function CaixaPage() {
     try {
       const res = await fetch(`${API_BASE_URL}/api/caixa`, {
         method: 'POST',
+        credentials: 'include',
         headers: getAuthHeaders(),
         body: JSON.stringify({
           valor: parseFloat(valor),
@@ -172,6 +163,7 @@ export default function CaixaPage() {
       const dataFormatada = dataAtual.toISOString().split('T')[0];
       const res = await fetch(`${API_BASE_URL}/api/caixa/${dataFormatada}/abrir`, {
         method: 'POST',
+        credentials: 'include',
         headers: getAuthHeaders(),
         body: JSON.stringify({
           saldoInicial: parseFloat(saldoInicial),
@@ -203,6 +195,7 @@ export default function CaixaPage() {
       const dataFormatada = dataAtual.toISOString().split('T')[0];
       const res = await fetch(`${API_BASE_URL}/api/caixa/${dataFormatada}/fechar`, {
         method: 'PATCH',
+        credentials: 'include',
         headers: getAuthHeaders(),
         body: JSON.stringify({
           observacoes

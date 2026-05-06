@@ -5,13 +5,12 @@ import Layout from '@/components/Layout';
 import ComissaoChart from '@/components/ComissaoChart';
 import AgendamentosDetalhes from '@/components/AgendamentosDetalhes';
 import HorarioTrabalho from '@/components/HorarioTrabalho';
-import { formatarTelefone, formatarMoeda } from '@/utils/formatters';
+import { formatarTelefone } from '@/utils/formatters';
 import { API_BASE_URL, getAuthHeaders } from '@/services/api';
 import PhoneInput from '@/components/PhoneInput';
 
 export default function FuncionariosPage() {
   const [funcionarios, setFuncionarios] = useState([]);
-  const [agendamentos, setAgendamentos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [modalAberto, setModalAberto] = useState(false);
@@ -54,12 +53,12 @@ export default function FuncionariosPage() {
     }
 
     fetchFuncionarios();
-    fetchAgendamentos();
   }, []);
 
   const fetchFuncionarios = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/users`, {
+        credentials: 'include',
         headers: getAuthHeaders()
       });
 
@@ -78,41 +77,6 @@ export default function FuncionariosPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const fetchAgendamentos = async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/agendamentos`, {
-        headers: getAuthHeaders()
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success && Array.isArray(data.data)) {
-          setAgendamentos(data.data);
-        } else if (Array.isArray(data)) {
-          setAgendamentos(data);
-        }
-      }
-    } catch (err) {
-      console.error('Erro ao carregar agendamentos:', err);
-    }
-  };
-
-  // Função para calcular comissão total do funcionário
-  const calcularComissaoFuncionario = (funcionarioId) => {
-    const agendamentosFuncionario = agendamentos.filter(
-      ag => ag.funcionarioId === funcionarioId && ag.status === 'concluido'
-    );
-
-    const totalComissao = agendamentosFuncionario.reduce((total, agendamento) => {
-      const valorServico = agendamento.preco || agendamento.valor || 0;
-      // Usar comissão do serviço (salva no agendamento) ou do servicoId
-      const comissaoServico = agendamento.comissao || agendamento.servicoId?.comissao || 0;
-      return total + (valorServico * (comissaoServico / 100));
-    }, 0);
-
-    return totalComissao;
   };
 
   const handleSubmit = async (e) => {
@@ -142,6 +106,7 @@ export default function FuncionariosPage() {
 
       const res = await fetch(url, {
         method,
+        credentials: 'include',
         headers: getAuthHeaders(),
         body: JSON.stringify(dadosParaEnvio)
       });
@@ -207,6 +172,7 @@ export default function FuncionariosPage() {
     try {
       const res = await fetch(`${API_BASE_URL}/api/users/${id}`, {
         method: 'DELETE',
+        credentials: 'include',
         headers: getAuthHeaders()
       });
 

@@ -33,6 +33,7 @@ export default function ClientesPage() {
   const fetchClientes = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/clientes`, {
+        credentials: 'include',
         headers: getAuthHeaders(),
       });
 
@@ -57,6 +58,7 @@ export default function ClientesPage() {
   const fetchServicos = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/servicos`, {
+        credentials: 'include',
         headers: getAuthHeaders(),
       });
 
@@ -83,6 +85,7 @@ export default function ClientesPage() {
 
       const res = await fetch(url, {
         method,
+        credentials: 'include',
         headers: getAuthHeaders(),
         body: JSON.stringify(formData)
       });
@@ -128,6 +131,7 @@ export default function ClientesPage() {
     try {
       const res = await fetch(`${API_BASE_URL}/api/clientes/${id}`, {
         method: 'DELETE',
+        credentials: 'include',
         headers: getAuthHeaders()
       });
 

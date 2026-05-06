@@ -23,6 +23,7 @@ export default function EstoquePage() {
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/produtos`, {
+      credentials: 'include',
       headers: getAuthHeaders(),
     })
       .then((res) => res.json())
@@ -49,6 +50,7 @@ export default function EstoquePage() {
     try {
       const res = await fetch(`${API_BASE_URL}/api/produtos`, {
         method: 'POST',
+        credentials: 'include',
         headers: getAuthHeaders(),
         body: JSON.stringify({
           nome: novo.nome,
@@ -97,6 +99,7 @@ export default function EstoquePage() {
     try {
       const res = await fetch(`${API_BASE_URL}/api/produtos/${id}/movimentar`, {
         method: 'PATCH',
+        credentials: 'include',
         headers: getAuthHeaders(),
         body: JSON.stringify({
           tipo,
@@ -110,6 +113,7 @@ export default function EstoquePage() {
       if (data.success) {
         // Recarregar a lista de produtos
         const produtosRes = await fetch(`${API_BASE_URL}/api/produtos`, {
+          credentials: 'include',
           headers: getAuthHeaders(),
         });
         const produtosData = await produtosRes.json();
@@ -149,6 +153,7 @@ export default function EstoquePage() {
     try {
       const res = await fetch(`${API_BASE_URL}/api/produtos/${editando}`, {
         method: 'PUT',
+        credentials: 'include',
         headers: getAuthHeaders(),
         body: JSON.stringify(produtoEditado),
       });
@@ -158,6 +163,7 @@ export default function EstoquePage() {
       if (data.success) {
         // Recarregar a lista de produtos
         const produtosRes = await fetch(`${API_BASE_URL}/api/produtos`, {
+          credentials: 'include',
           headers: getAuthHeaders(),
         });
         const produtosData = await produtosRes.json();

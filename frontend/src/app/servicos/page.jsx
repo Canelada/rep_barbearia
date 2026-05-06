@@ -45,6 +45,7 @@ export default function ServicosPage() {
   const fetchServicos = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/servicos`, {
+        credentials: 'include',
         headers: getAuthHeaders(),
       });
 
@@ -69,6 +70,7 @@ export default function ServicosPage() {
   const fetchCategorias = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/categorias`, {
+        credentials: 'include',
         headers: getAuthHeaders(),
       });
 
@@ -103,6 +105,7 @@ export default function ServicosPage() {
   const fetchEstatisticasCategorias = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/categorias/estatisticas`, {
+        credentials: 'include',
         headers: getAuthHeaders(),
       });
 
@@ -132,6 +135,7 @@ export default function ServicosPage() {
 
       const res = await fetch(url, {
         method,
+        credentials: 'include',
         headers: getAuthHeaders(),
         body: JSON.stringify({
           ...formData,
@@ -184,6 +188,7 @@ export default function ServicosPage() {
     try {
       const res = await fetch(`${API_BASE_URL}/api/servicos/${id}`, {
         method: 'DELETE',
+        credentials: 'include',
         headers: getAuthHeaders(),
       });
 
@@ -234,6 +239,7 @@ export default function ServicosPage() {
     try {
       const res = await fetch(`${API_BASE_URL}/api/categorias`, {
         method: 'POST',
+        credentials: 'include',
         headers: getAuthHeaders(),
         body: JSON.stringify({ nome: novaCategoria.trim() }),
       });
@@ -264,6 +270,7 @@ export default function ServicosPage() {
     try {
       const res = await fetch(`${API_BASE_URL}/api/categorias/${encodeURIComponent(categoria)}`, {
         method: 'DELETE',
+        credentials: 'include',
         headers: getAuthHeaders(),
       });
 

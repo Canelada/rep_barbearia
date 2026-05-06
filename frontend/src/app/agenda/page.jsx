@@ -2,16 +2,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import {
-  parseISO,
-  addDays,
-  addWeeks,
-  addMonths,
-  subDays,
-  subWeeks,
-  subMonths,
-  addMinutes,
-} from 'date-fns';
+import { parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { format, startOfWeek, getDay } from 'date-fns';
 import { Dialog } from '@headlessui/react';
@@ -24,7 +15,7 @@ import {
   converterParaDateTimeLocal,
   converterDateTimeLocalParaISO,
 } from '@/utils/formatters';
-import { messages, formats, locale } from '@/utils/calendar-localization';
+import { messages, formats } from '@/utils/calendar-localization';
 import { API_BASE_URL, getAuthHeaders } from '@/services/api';
 import PhoneInput from '@/components/PhoneInput';
 
@@ -104,15 +95,19 @@ export default function Agenda() {
       const [agendamentosRes, clientesRes, servicosRes, funcionariosRes] =
         await Promise.all([
           fetch(`${API_BASE_URL}/api/agendamentos`, {
+            credentials: 'include',
             headers: getAuthHeaders(),
           }),
           fetch(`${API_BASE_URL}/api/clientes`, {
+            credentials: 'include',
             headers: getAuthHeaders(),
           }),
           fetch(`${API_BASE_URL}/api/servicos`, {
+            credentials: 'include',
             headers: getAuthHeaders(),
           }),
           fetch(`${API_BASE_URL}/api/users`, {
+            credentials: 'include',
             headers: getAuthHeaders(),
           }),
         ]);
@@ -239,7 +234,6 @@ export default function Agenda() {
 
   useEffect(() => {
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Funções de manipulação do calendário
@@ -285,18 +279,6 @@ export default function Agenda() {
       metodoPagamento: '',
     });
     setIsCreateModalOpen(true);
-  };
-
-  // Função para atualizar o preço quando o serviço é selecionado
-  const handleServicoChange = (servicoId) => {
-    const servico = servicos.find((s) => s._id === servicoId);
-    const preco = servico ? servico.valor : 0;
-
-    setNewEvent({
-      ...newEvent,
-      servicoId,
-      preco,
-    });
   };
 
   // Função para atualizar o preço no edit quando o serviço é alterado
@@ -415,6 +397,7 @@ export default function Agenda() {
         // Criar novo cliente
         const clienteResponse = await fetch(`${API_BASE_URL}/api/clientes`, {
           method: 'POST',
+          credentials: 'include',
           headers: {
             ...getAuthHeaders(),
             'Content-Type': 'application/json',
@@ -444,6 +427,7 @@ export default function Agenda() {
       if (!servicoId && newEvent.servicoNome) {
         const servicoResponse = await fetch(`${API_BASE_URL}/api/servicos`, {
           method: 'POST',
+          credentials: 'include',
           headers: {
             ...getAuthHeaders(),
             'Content-Type': 'application/json',
@@ -476,6 +460,7 @@ export default function Agenda() {
       if (!funcionarioId && newEvent.funcionarioNome) {
         const funcionarioResponse = await fetch(`${API_BASE_URL}/api/users/funcionario-basico`, {
           method: 'POST',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json'
           },
@@ -514,6 +499,7 @@ export default function Agenda() {
 
       const response = await fetch(`${API_BASE_URL}/api/agendamentos`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           ...getAuthHeaders(),
           'Content-Type': 'application/json',
@@ -565,6 +551,7 @@ export default function Agenda() {
         `${API_BASE_URL}/api/agendamentos/${editingEvent.id}`,
         {
           method: 'PUT',
+          credentials: 'include',
           headers: {
             ...getAuthHeaders(),
             'Content-Type': 'application/json',
@@ -597,6 +584,7 @@ export default function Agenda() {
         `${API_BASE_URL}/api/agendamentos/${id}/cancelar`,
         {
           method: 'PATCH',
+          credentials: 'include',
           headers: getAuthHeaders(),
         }
       );
@@ -625,6 +613,7 @@ export default function Agenda() {
         `${API_BASE_URL}/api/agendamentos/${id}/concluir`,
         {
           method: 'PATCH',
+          credentials: 'include',
           headers: {
             ...getAuthHeaders(),
             'Content-Type': 'application/json'
@@ -703,16 +692,13 @@ export default function Agenda() {
   const eventPropGetter = (event) => {
     let backgroundColor = '#3b82f6'; // Azul padrão (normal)
     let borderColor = '#2563eb';
-    let statusLabel = 'normal';
 
     if (event.resource.status === 'concluido') {
       backgroundColor = '#10b981'; // Verde
       borderColor = '#059669';
-      statusLabel = 'concluido';
     } else if (event.resource.status === 'cancelado') {
       backgroundColor = '#6b7280'; // Cinza
       borderColor = '#4b5563';
-      statusLabel = 'cancelado';
     } else {
       // Verificar se está atrasado
       const dataHoraFim = event.end;
@@ -722,7 +708,6 @@ export default function Agenda() {
       if (agora > limiteAtraso) {
         backgroundColor = '#ef4444'; // Vermelho (atrasado)
         borderColor = '#dc2626';
-        statusLabel = 'atrasado';
       }
     }
 
