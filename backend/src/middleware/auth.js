@@ -16,17 +16,9 @@ const getCookieToken = (req) => {
   return cookies.token || null;
 };
 
-const getBearerToken = (req) => {
-  const authHeader = req.headers.authorization;
-  const [, token] = authHeader?.split(' ') || [];
-
-  if (!token || token === 'null' || token === 'undefined') return null;
-  return token;
-};
-
 export const authenticateToken = async (req, res, next) => {
   try {
-    const token = getCookieToken(req) || getBearerToken(req);
+    const token = getCookieToken(req);
 
     if (!token) {
       return res.status(401).json({
@@ -96,7 +88,7 @@ export const authorizeRoles = (...roles) => {
 
 export const optionalAuth = async (req, res, next) => {
   try {
-    const token = getCookieToken(req) || getBearerToken(req);
+    const token = getCookieToken(req);
 
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);

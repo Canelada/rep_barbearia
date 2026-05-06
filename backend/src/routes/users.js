@@ -19,8 +19,7 @@ import User from '../models/userModel.js';
 import pagination from '../middleware/pagination.js';
 import { authenticateToken, authorizeRoles } from '../middleware/auth.js';
 import { handleValidationErrors, asyncHandler } from '../middleware/validation.js';
-import { validateUserCreate, validateId } from '../utils/validators.js';
-import logger from '../utils/logger.js';
+import { validateId } from '../utils/validators.js';
 import { registrarLog, extrairInfoRequest, limparDadosSensiveis } from '../utils/auditLogger.js';
 
 const router = express.Router();

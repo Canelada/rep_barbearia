@@ -19,7 +19,7 @@ import AgendamentoController from '../controllers/agendamentoController.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { handleValidationErrors } from '../middleware/validation.js';
 import pagination from '../middleware/pagination.js';
-import { validateAgendamentoCreate, validateId, validateDateRange, validatePagination } from '../utils/validators.js';
+import { validateAgendamentoCreate, validateId, validateDateRange } from '../utils/validators.js';
 import { body } from 'express-validator';
 
 const router = express.Router();

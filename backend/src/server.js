@@ -60,7 +60,7 @@ app.use(cors({
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: ['Content-Type', 'X-Requested-With'],
 }));
 
 app.use(compression());
@@ -115,14 +115,14 @@ app.get('/api', (req, res) => {
       auth: {
         login: 'POST /api/auth/login',
         register: 'POST /api/auth/register',
-        profile: 'GET /api/auth/profile',
+        verify: 'POST /api/auth/verify',
       },
       agendamentos: {
         list: 'GET /api/agendamentos',
         create: 'POST /api/agendamentos',
         update: 'PUT /api/agendamentos/:id',
         delete: 'DELETE /api/agendamentos/:id',
-        horarios: 'GET /api/agendamentos/horarios',
+        horarios: 'GET /api/agendamentos/horarios-disponiveis',
       },
       servicos: {
         list: 'GET /api/servicos',

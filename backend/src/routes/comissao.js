@@ -1,6 +1,5 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import Agendamento from '../models/Agendamento.js';
 import PagamentoComissao from '../models/PagamentoComissao.js';
 import Caixa from '../models/Caixa.js';
 import ComissaoService from '../services/ComissaoService.js';

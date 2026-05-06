@@ -7,14 +7,11 @@
  */
 import express from 'express';
 import Agendamento from '../models/Agendamento.js';
-import Servico from '../models/Servico.js';
-import User from '../models/userModel.js';
 import Caixa from '../models/Caixa.js';
 import Produto from '../models/Produto.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { asyncHandler } from '../middleware/validation.js';
 import dayjs from 'dayjs';
-import logger from '../utils/logger.js';
 
 const router = express.Router();
 

@@ -136,7 +136,7 @@ npm run type-check
 
 - Frontend: Vercel usando `frontend/vercel.json`.
 - Backend: Vercel usando `backend/vercel.json` ou Railway usando `backend/railway.json`.
-- Em producao, configure `FRONTEND_URL`, `MONGODB_URI`, `JWT_SECRET` e as variaveis opcionais de email/Twilio no provedor.
+- Em producao, configure `FRONTEND_URL`, `MONGODB_URI`, `JWT_SECRET` e as variaveis opcionais de Twilio no provedor.
 
 ## Observacoes de Seguranca
 
